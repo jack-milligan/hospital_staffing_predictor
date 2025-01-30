@@ -54,6 +54,9 @@ The dataset consists of **hourly** hospital records over **one year (2024)**:
 - Uses a **patient-to-staff ratio** of **10:1** to suggest optimal staffing levels.
 - Adjusts recommendations based on **predicted patient influx**.
 
+📌 **Recommended Staffing Levels by Hour**
+![Recommended Staffing Levels](images/hourly_staffing_recommendations.png)
+
 📌 **Recommended Staffing Levels**
 ![Recommended Staffing Levels](images/recommended_staffing_levels.png)
 
