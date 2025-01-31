@@ -80,7 +80,7 @@ if result[1] < 0.05:
 else:
     print("The time series is non-stationary. Differencing may be required for ARIMA.")
 
-# --- Step 4: Forecasting Patient Volumes with Prophet ---
+# --- Step 4: Forecasting Patient Volumes with Prophet (Differencing Not Require) ---
 
 # Prepare the data for Prophet (Prophet requires column names 'ds' for datetime and 'y' for values)
 prophet_df = df['patient_volume'].reset_index()
