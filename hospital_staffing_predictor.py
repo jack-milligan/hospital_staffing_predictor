@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt  # For data visualization
 from datetime import datetime  # For date handling
 from statsmodels.tsa.stattools import adfuller  # For stationarity testing
 from prophet import Prophet  # For time-series forecasting
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 # --- Step 1: Setup & Data Simulation ---
 
@@ -142,7 +143,30 @@ plt.show()
 
 print(f"\nHourly staffing recommendations visualization saved to: {hourly_staffing_image_path}")
 
-# --- Step 6: Plotting Recommended Staffing Levels Over Time ---
+# --- Step 6: Model Evaluation ---
+
+naive_forecast = df['patient_volume'].shift(1)  # Use previous value as prediction
+
+# Drop NaN values (since first row will be NaN after shifting)
+valid_rows = ~df['patient_volume'].isna() & ~naive_forecast.isna()
+naive_mae = mean_absolute_error(df['patient_volume'][valid_rows], naive_forecast[valid_rows])
+naive_rmse = np.sqrt(mean_squared_error(df['patient_volume'][valid_rows], naive_forecast[valid_rows]))
+
+print(f"\nNaive Model Baseline Evaluation:")
+print(f"Naïve Model MAE: {naive_mae:.2f}")
+print(f"Naïve Model RMSE: {naive_rmse:.2f}")
+
+actual_vs_pred = df.merge(forecast[['ds', 'yhat']], left_on='timestamp', right_on='ds', how='inner')
+mae = mean_absolute_error(actual_vs_pred['patient_volume'], actual_vs_pred['yhat'])
+mse = mean_squared_error(actual_vs_pred['patient_volume'], actual_vs_pred['yhat'])
+rmse = np.sqrt(mse)
+
+print(f"\nModel Evaluation:")
+print(f"Mean Absolute Error (MAE): {mae:.2f}")
+print(f"Mean Squared Error (MSE): {mse:.2f}")
+print(f"Root Mean Squared Error (RMSE): {rmse:.2f}")
+
+# --- Step 7: Plotting Recommended Staffing Levels Over Time ---
 
 # Calculate recommended staffing levels using a patient-to-staff ratio of 10
 forecast['recommended_staffing'] = (forecast['yhat'] / 10).round().clip(lower=1)
